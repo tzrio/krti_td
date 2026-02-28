@@ -62,19 +62,21 @@ docs/installation/
 
 # 🚀 PHASE 1 – INSTALLATION
 
-Semua detail ada di:
+Semua instalasi WAJIB mengikuti panduan resmi di dalam repository ini.
 
-- docs/installation/ros2_humble.md
-- docs/installation/gazebo_gz.md
-- docs/installation/px4_autopilot.md
-- docs/installation/qgroundcontrol.md
+Klik langsung file berikut:
+
+- [ROS2 Humble Installation](docs/installation/ros2_humble.md)
+- [Gazebo (gz) Installation](docs/installation/gazebo_gz.md)
+- [PX4 Autopilot Installation](docs/installation/px4_autopilot.md)
+- [QGroundControl Installation](docs/installation/qgroundcontrol.md)
 
 Setiap file berisi:
-- Step instalasi
+- Step instalasi detail
 - Command verifikasi
-- EXPECTED OUTPUT (yang harus muncul di terminal)
+- EXPECTED OUTPUT (output terminal yang harus muncul)
 
-Jika output berbeda → dianggap gagal setup.
+Jika output berbeda dari EXPECTED OUTPUT → setup dianggap gagal dan harus diperbaiki sebelum lanjut ke fase berikutnya.
 
 ---
 
