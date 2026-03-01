@@ -1,49 +1,6 @@
-# 📦 KRTI TD – SOFTWARE FOUNDATION REPOSITORY STRUCTURE (UPDATED)
-
-Struktur repository diperbarui agar:
-- Setiap instalasi punya file .md sendiri
-- Setiap verifikasi memiliki EXPECTED OUTPUT
-- Bisa dipakai sebagai standar kelulusan internal
-
----
-
-krtitd-software-foundation/
-│
-├── README.md
-├── validation_checklist.md
-├── demo_video_link.txt
-│
-├── docs/
-│   ├── installation/
-│   │   ├── ros2_humble.md
-│   │   ├── gazebo_gz.md
-│   │   ├── px4_autopilot.md
-│   │   └── qgroundcontrol.md
-│   │
-│   ├── px4_ros_architecture.md
-│   └── offboard_explained.md
-│
-└── ros2_ws/
-    └── src/
-        └── offboard_control/
-            ├── CMakeLists.txt
-            ├── package.xml
-            ├── launch/
-            │   └── offboard.launch.py
-            └── src/
-                └── offboard_control.cpp
-
-====================================================
-
-# 📄 README.md (UPDATED FORMAT)
-
-# KRTI TD – Software Foundation Bootcamp
+# KRTI TD – Vajraakasha 2026 [Autonomy & Flight Systems (1)] 
 
 Repository ini adalah tahap fundamental divisi Software.
-
-Semua instalasi WAJIB mengikuti file di folder:
-
-docs/installation/
 
 ---
 
@@ -51,11 +8,11 @@ docs/installation/
 
 1. Install & verifikasi:
    - ROS2 Humble
-   - Gazebo (gz)
+   - Gazebo 
    - PX4 Autopilot
    - QGroundControl
 
-2. Integrasi ROS2 ↔ PX4 ↔ QGC
+2. Integrasi PX4 ↔ QGC
 3. Menjalankan misi autonomous sederhana
 
 ---
@@ -67,133 +24,35 @@ Semua instalasi WAJIB mengikuti panduan resmi di dalam repository ini.
 Klik langsung file berikut:
 
 - [ROS2 Humble Installation](docs/installation/ros2_humble.md)
-- [Gazebo (gz) Installation](docs/installation/gazebo_gz.md)
+- [Gazebo Installation](docs/installation/gazebo.md)
 - [PX4 Autopilot Installation](docs/installation/px4_autopilot.md)
 - [QGroundControl Installation](docs/installation/qgroundcontrol.md)
-
-Setiap file berisi:
-- Step instalasi detail
-- Command verifikasi
-- EXPECTED OUTPUT (output terminal yang harus muncul)
-
-Jika output berbeda dari EXPECTED OUTPUT → setup dianggap gagal dan harus diperbaiki sebelum lanjut ke fase berikutnya.
 
 ---
 
 # 🔗 PHASE 2 – INTEGRATION CHECK
 
-## 1️⃣ Cek PX4 Running
-
-Command:
-
-ros2 topic list
-
-EXPECTED OUTPUT minimal mengandung:
-
-/fmu/in/vehicle_command
-/fmu/in/offboard_control_mode
-/fmu/out/vehicle_odometry
-/fmu/out/vehicle_status
-
-Jika topic /fmu tidak muncul → XRCE-DDS tidak terhubung.
-
----
-
-## 2️⃣ Cek Odometry
-
-Command:
-
-ros2 topic echo /fmu/out/vehicle_odometry
-
-EXPECTED OUTPUT:
-
-Header:
-  stamp:
-    sec: ...
-position:
-  - 0.0
-  - 0.0
-  - ...
-
-Data harus terus update (tidak berhenti).
-
----
-
-## 3️⃣ Cek PX4 SITL
-
-Command dari folder PX4:
-
+## 1️⃣ PX4 SITL Gazebo
+Terminal 1. Command dari folder PX4-Autopilot:
+```
 make px4_sitl gz_x500
-
+```
 EXPECTED OUTPUT:
-
+```
 INFO  [px4] Startup script returned successfully
 INFO  [mavlink] MAVLink only on localhost
 INFO  [init] PX4 SIM startup
-
+```
 Gazebo harus terbuka otomatis.
 
----
+##
 
-# 📄 docs/installation/ros2_humble.md
-
-## Verifikasi
-
-Command:
-
-ros2 doctor
-
+## 2️⃣ QGroundControl
+Terminal 2. Command di folder yang ada QGroundControl.AppImage:
+```
+./QGroundControl-x86_64.AppImage
+```
 EXPECTED OUTPUT:
-
-All checks passed
-
-Command:
-
-ros2 topic list
-
-EXPECTED OUTPUT:
-
-/parameter_events
-/rosout
-
-Jika command tidak dikenali → ROS belum tersource.
-
-====================================================
-
-# 📄 docs/installation/gazebo_gz.md
-
-Command:
-
-gz sim shapes.sdf
-
-EXPECTED OUTPUT:
-
-Gazebo window terbuka
-Terminal menampilkan:
-
-[Msg] Loaded world
-
-Jika error "command not found" → Gazebo belum terinstall.
-
-====================================================
-
-# 📄 docs/installation/px4_autopilot.md
-
-Command:
-
-make px4_sitl gz_x500
-
-EXPECTED OUTPUT akhir:
-
-INFO  [px4] Startup script returned successfully
-
-Jika muncul dependency error → setup belum valid.
-
-====================================================
-
-# 📄 docs/installation/qgroundcontrol.md
-
-EXPECTED BEHAVIOR:
 
 - QGC terbuka tanpa crash
 - Vehicle terdeteksi otomatis
@@ -201,18 +60,119 @@ EXPECTED BEHAVIOR:
 
 Jika tidak terhubung → cek UDP link.
 
-====================================================
+---
 
-# 🔥 KENAPA FORMAT INI LEBIH BAGUS?
+# 🤖 PHASE 3 – AUTONOMOUS MISSION (OFFBOARD CONTROL)
 
-- Tidak ada alasan "di laptopku bisa"
-- Semua verifikasi ada standar output
-- Bisa jadi standar kelulusan internal
-- Memaksa anggota benar-benar paham setup
+Pada fase ini, anggota WAJIB:
+- Membuat node C++ ROS2
+- Menggunakan PX4 Offboard Mode
+- Mengirim setpoint secara kontinu
+- Menjalankan sequence:
+1. Arm
+2. Takeoff
+3. Hover
+4. Land
+   
+##
 
-====================================================
+##📦 ROS2 WORKSPACE STRUCTURE
+```
+ros2_ws/
+├── src/
+│   │
+│   ├── offboard_cpp/
+│   │   ├── CMakeLists.txt
+│   │   ├── package.xml
+│   │   ├── launch/
+│   │   │   └── offboard.launch.py
+│   │   └── src/
+│   │       └── offboard_node.cpp
+│   │
+│   ├── offboard_py/
+│   │   ├── package.xml
+│   │   ├── setup.py
+│   │   ├── setup.cfg
+│   │   ├── launch/
+│   │   │   └── offboard.launch.py
+│   │   └── offboard_py/
+│   │       ├── __init__.py
+│   │       └── offboard_node.py
+│   │
+│   └── px4_msgs/   
+│
+├── build/
+├── install/
+└── log/
+```
+##
 
-Kalau mau next upgrade:
-- Tambahin screenshot contoh output
-- Tambahin section troubleshooting detail
-- Atau bikin auto validation script bash
+## 1️⃣ Build Workspace
+
+Masuk ke ros2_ws:
+
+```
+cd ros2_ws
+colcon build
+source install/setup.bash
+```
+
+EXPECTED OUTPUT:
+
+```
+Summary: X packages finished
+```
+
+Tidak boleh ada tulisan:
+FAILED
+
+##
+
+## 2️⃣ Jalankan PX4 SITL
+
+```
+cd PX4-Autopilot
+make px4_sitl gz_x500
+```
+
+EXPECTED OUTPUT akhir:
+
+```
+INFO  [px4] Startup script returned successfully
+INFO  [init] PX4 SIM startup
+```
+
+Gazebo harus terbuka otomatis.
+
+##
+
+## 3️⃣ Jalankan Offboard Node
+
+Untuk C++:
+
+```
+ros2 launch offboard_cpp offboard.launch.py
+```
+
+Untuk Python:
+
+```
+ros2 launch offboard_py offboard.launch.py
+```
+
+##
+
+## 4️⃣ Verifikasi Mode
+
+```
+ros2 topic echo /fmu/out/vehicle_status
+```
+
+EXPECTED OUTPUT:
+
+nav_state: 14
+arming_state: 2
+
+nav_state 14 = OFFBOARD
+arming_state 2 = ARMED
+
