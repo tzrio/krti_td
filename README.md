@@ -1,6 +1,6 @@
 # KRTI TD – Vajraakasha 2026 [Autonomy & Flight Systems (1)]
 
-Repository ini adalah materi fundamental divisi software untuk alur PX4 + ROS2 offboard control (fokus C++).
+Repository ini adalah materi fundamental divisi software untuk alur PX4 + ROS2 offboard control (SITL).
 
 ---
 
