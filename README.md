@@ -27,6 +27,7 @@ Klik langsung file berikut:
 - [Gazebo Installation](docs/installation/gazebo.md)
 - [PX4 Autopilot Installation](docs/installation/px4_autopilot.md)
 - [QGroundControl Installation](docs/installation/qgroundcontrol.md)
+- [MicroXRCEAgent Installation](docs/installation/microxrceagent.md)
 
 ---
 
